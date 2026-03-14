@@ -1,7 +1,5 @@
-import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
 import bcrypt from "bcryptjs";
@@ -13,6 +11,13 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     CredentialsProvider({
       name: "credentials",
@@ -45,19 +50,23 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user }) {
-      // Create default workspace for new users
-      if (user.id) {
-        const existing = await db.workspaceMember.findFirst({
-          where: { userId: user.id },
-        });
-        if (!existing) {
-          const ws = await db.workspace.create({
-            data: { name: `${user.name ?? "My"}'s Workspace` },
+      // Create default workspace for new users — never block sign-in on failure
+      try {
+        if (user?.id) {
+          const existing = await db.workspaceMember.findFirst({
+            where: { userId: user.id },
           });
-          await db.workspaceMember.create({
-            data: { userId: user.id, workspaceId: ws.id, role: "admin" },
-          });
+          if (!existing) {
+            const ws = await db.workspace.create({
+              data: { name: `${user.name ?? "My"}'s Workspace` },
+            });
+            await db.workspaceMember.create({
+              data: { userId: user.id, workspaceId: ws.id, role: "admin" },
+            });
+          }
         }
+      } catch (err) {
+        console.error("signIn workspace setup error (non-fatal):", err);
       }
       return true;
     },
