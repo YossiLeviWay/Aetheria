@@ -1,0 +1,68 @@
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { db } from "./db";
+import bcrypt from "bcryptjs";
+import type { NextAuthOptions } from "next-auth";
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(db),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    }),
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+        const user = await db.user.findUnique({
+          where: { email: credentials.email },
+        });
+        if (!user?.passwordHash) return null;
+        const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+        if (!valid) return null;
+        return { id: user.id, email: user.email, name: user.name, image: user.avatarUrl };
+      },
+    }),
+  ],
+  session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.id = user.id;
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as { id?: string }).id = token.id as string;
+      }
+      return session;
+    },
+    async signIn({ user }) {
+      // Create default workspace for new users
+      if (user.id) {
+        const existing = await db.workspaceMember.findFirst({
+          where: { userId: user.id },
+        });
+        if (!existing) {
+          const ws = await db.workspace.create({
+            data: { name: `${user.name ?? "My"}'s Workspace` },
+          });
+          await db.workspaceMember.create({
+            data: { userId: user.id, workspaceId: ws.id, role: "admin" },
+          });
+        }
+      }
+      return true;
+    },
+  },
+  pages: {
+    signIn: "/login",
+  },
+};
