@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4F46E5;
+  --color-primary-light: #818CF8;
+  --color-secondary: #14B8A6;
+  --color-accent: #F59E0B;
+  --color-danger: #F43F5E;
+  --color-background: #F9FAFB;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-border: #E5E7EB;
+
+  --font-family-sans: "Inter", "Heebo", sans-serif;
+  --font-family-heebo: "Heebo", sans-serif;
+
+  --border-radius-DEFAULT: 12px;
+  --border-radius-lg: 16px;
+
+  --shadow-card: 0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px -1px rgba(0,0,0,0.06);
+  --shadow-modal: 0 10px 40px rgba(0,0,0,0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Heebo', sans-serif;
+  background-color: #F9FAFB;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] body {
+  font-family: 'Heebo', 'Inter', sans-serif;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4F46E5;
+  color: white;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: none;
+  cursor: pointer;
+}
+.btn-primary:hover { background-color: rgba(79,70,229,0.9); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #111827;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-secondary:hover { background-color: #F9FAFB; }
+
+.card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px -1px rgba(0,0,0,0.06);
+  border: 1px solid #E5E7EB;
+  padding: 1rem;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
+}
+
+/* Skeleton loading animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton {
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: #E5E7EB;
+  border-radius: 4px;
+}
+
+/* Tiptap editor styles */
+.ProseMirror {
+  outline: none;
+  min-height: 100px;
+}
+
+.ProseMirror p {
+  margin: 0.5em 0;
+}
+
+.ProseMirror h1 { font-size: 1.5em; font-weight: 600; margin: 0.5em 0; }
+.ProseMirror h2 { font-size: 1.25em; font-weight: 600; margin: 0.5em 0; }
+.ProseMirror h3 { font-size: 1.1em; font-weight: 600; margin: 0.5em 0; }
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #E5E7EB;
+  padding-left: 1em;
+  color: #6B7280;
+  font-style: italic;
+}
+
+.ProseMirror pre {
+  background: #F3F4F6;
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+.ProseMirror code {
+  background: #F3F4F6;
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.ProseMirror table td, .ProseMirror table th {
+  border: 1px solid #E5E7EB;
+  padding: 0.5em;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #9CA3AF;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Transition animations */
+.slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RTL Support */
+[dir="rtl"] .ProseMirror ul,
+[dir="rtl"] .ProseMirror ol {
+  padding-right: 1.5em;
+  padding-left: 0;
+}
+
+[dir="rtl"] .ProseMirror blockquote {
+  border-left: none;
+  border-right: 3px solid #E5E7EB;
+  padding-left: 0;
+  padding-right: 1em;
+}

@@ -1,0 +1,144 @@
+{
+  "app": {
+    "name": "Aetheria",
+    "tagline": "מרכז הפיקוד שלך לכל דבר"
+  },
+  "nav": {
+    "myDay": "היום שלי",
+    "projects": "פרויקטים",
+    "calendar": "לוח שנה",
+    "team": "צוות",
+    "settings": "הגדרות",
+    "newProject": "פרויקט חדש"
+  },
+  "auth": {
+    "login": "כניסה",
+    "signup": "הרשמה",
+    "logout": "יציאה",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "name": "שם מלא",
+    "continueWith": "המשך עם",
+    "orWith": "או המשך עם אימייל",
+    "noAccount": "אין לך חשבון?",
+    "haveAccount": "כבר יש לך חשבון?",
+    "forgotPassword": "שכחת סיסמה?"
+  },
+  "project": {
+    "new": "פרויקט חדש",
+    "name": "שם הפרויקט",
+    "description": "תיאור",
+    "color": "צבע",
+    "icon": "אייקון",
+    "status": "סטטוס",
+    "active": "פעיל",
+    "onHold": "בהמתנה",
+    "completed": "הושלם",
+    "archived": "בארכיון",
+    "missions": "משימות גדולות",
+    "members": "חברי צוות",
+    "settings": "הגדרות פרויקט"
+  },
+  "mission": {
+    "new": "משימה גדולה חדשה",
+    "name": "שם המשימה",
+    "priority": "עדיפות",
+    "status": "סטטוס",
+    "dueDate": "תאריך יעד",
+    "assignees": "ממונים",
+    "progress": "התקדמות",
+    "tasks": "משימות"
+  },
+  "task": {
+    "new": "משימה חדשה",
+    "name": "שם המשימה",
+    "status": "סטטוס",
+    "priority": "עדיפות",
+    "assignee": "ממונה",
+    "dueDate": "תאריך יעד",
+    "description": "תיאור",
+    "checklist": "רשימת תיוג",
+    "comments": "תגובות",
+    "submit": "הגשת עבודה",
+    "approve": "אישור",
+    "return": "החזרה לתיקון",
+    "todo": "לביצוע",
+    "inProgress": "בביצוע",
+    "done": "הושלם",
+    "blocked": "חסום"
+  },
+  "priority": {
+    "critical": "קריטי",
+    "high": "גבוה",
+    "medium": "בינוני",
+    "low": "נמוך"
+  },
+  "common": {
+    "save": "שמירה",
+    "cancel": "ביטול",
+    "delete": "מחיקה",
+    "edit": "עריכה",
+    "create": "יצירה",
+    "update": "עדכון",
+    "search": "חיפוש...",
+    "loading": "טוען...",
+    "noResults": "לא נמצאו תוצאות",
+    "add": "הוספה",
+    "close": "סגירה",
+    "confirm": "אישור",
+    "today": "היום",
+    "yesterday": "אתמול",
+    "thisWeek": "השבוע",
+    "overdue": "באיחור",
+    "viewAll": "הצג הכל",
+    "filter": "סינון",
+    "sort": "מיון",
+    "groupBy": "קבץ לפי"
+  },
+  "dashboard": {
+    "myDay": "היום שלי",
+    "todayTasks": "משימות להיום",
+    "todayEvents": "אירועים להיום",
+    "board": "לוח",
+    "list": "רשימה",
+    "calendar": "לוח שנה",
+    "timeline": "ציר זמן",
+    "summary": "סיכום",
+    "workload": "עומס עבודה",
+    "customize": "התאמה אישית"
+  },
+  "notifications": {
+    "title": "התראות",
+    "markRead": "סמן כנקרא",
+    "markAllRead": "סמן הכל כנקרא",
+    "noNotifications": "אין התראות"
+  },
+  "calendar": {
+    "connectCalendar": "חבר לוח שנה",
+    "google": "לוח שנה של גוגל",
+    "outlook": "לוח שנה של אאוטלוק",
+    "apple": "לוח שנה של אפל",
+    "sync": "סנכרן עכשיו",
+    "month": "חודש",
+    "week": "שבוע",
+    "day": "יום"
+  },
+  "team": {
+    "invite": "הזמן חבר",
+    "inviteEmail": "כתובת אימייל",
+    "role": "תפקיד",
+    "admin": "מנהל",
+    "member": "חבר",
+    "viewer": "צופה",
+    "remove": "הסר",
+    "members": "חברים"
+  },
+  "settings": {
+    "profile": "פרופיל",
+    "notifications": "התראות",
+    "language": "שפה",
+    "timezone": "אזור זמן",
+    "appearance": "מראה",
+    "integrations": "אינטגרציות"
+  }
+}
