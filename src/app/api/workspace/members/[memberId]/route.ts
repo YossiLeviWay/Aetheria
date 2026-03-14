@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { memberId: 
   const member = await db.workspaceMember.update({
     where: { id: params.memberId },
     data: { role },
-    include: { user: { select: { id: true, name: true, email: true, avatarUrl: true } } },
+    include: { user: { select: { id: true, name: true, email: true, image: true } } },
   });
 
   return NextResponse.json(member);

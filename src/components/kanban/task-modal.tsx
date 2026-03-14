@@ -148,7 +148,7 @@ export default function TaskModal({ task, open, onClose, onUpdate, onDelete }: T
               <p className="text-xs text-text-secondary mb-1.5 font-medium">{t("task.assignee")}</p>
               {task.assignee ? (
                 <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-xl">
-                  <Avatar name={task.assignee.name} avatarUrl={task.assignee.avatarUrl} size="sm" />
+                  <Avatar name={task.assignee.name} image={task.assignee.image} size="sm" />
                   <span className="text-sm truncate">{task.assignee.name}</span>
                 </div>
               ) : (

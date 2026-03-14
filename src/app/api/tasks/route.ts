@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       dueDate: dueDate ? new Date(dueDate) : undefined,
     },
     include: {
-      assignee: { select: { id: true, name: true, avatarUrl: true } },
+      assignee: { select: { id: true, name: true, image: true } },
       checklist: true,
       tags: true,
     },

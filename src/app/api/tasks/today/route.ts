@@ -31,7 +31,7 @@ export async function GET() {
       ],
     },
     include: {
-      assignee: { select: { id: true, name: true, avatarUrl: true } },
+      assignee: { select: { id: true, name: true, image: true } },
       checklist: true,
       tags: true,
     },

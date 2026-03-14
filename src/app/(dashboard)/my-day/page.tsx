@@ -203,7 +203,7 @@ function TaskCard({ task, dimmed, onUpdate }: { task: Task; dimmed?: boolean; on
       </div>
 
       {task.assignee && (
-        <Avatar name={task.assignee.name} avatarUrl={task.assignee.avatarUrl} size="sm" />
+        <Avatar name={task.assignee.name} image={task.assignee.image} size="sm" />
       )}
     </div>
   );

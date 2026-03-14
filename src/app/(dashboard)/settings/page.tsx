@@ -73,7 +73,7 @@ function ProfileTab() {
     <div className="card">
       <h2 className="font-semibold mb-5">Profile</h2>
       <div className="flex items-center gap-4 mb-6">
-        <Avatar name={session?.user?.name ?? "U"} avatarUrl={session?.user?.image} size="lg" />
+        <Avatar name={session?.user?.name ?? "U"} image={session?.user?.image} size="lg" />
         <div>
           <p className="font-medium">{session?.user?.name}</p>
           <p className="text-sm text-text-secondary">{session?.user?.email}</p>

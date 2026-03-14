@@ -186,7 +186,7 @@ export default function ListPage() {
               </div>
               <div className="col-span-1 flex items-center">
                 {task.assignee ? (
-                  <Avatar name={task.assignee.name} avatarUrl={task.assignee.avatarUrl} size="sm" />
+                  <Avatar name={task.assignee.name} image={task.assignee.image} size="sm" />
                 ) : (
                   <span className="text-xs text-text-secondary">—</span>
                 )}

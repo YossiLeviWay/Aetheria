@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       isPinned: isPinned ?? false,
     },
     include: {
-      author: { select: { id: true, name: true, avatarUrl: true } },
+      author: { select: { id: true, name: true, image: true } },
       reactions: true,
     },
   });
