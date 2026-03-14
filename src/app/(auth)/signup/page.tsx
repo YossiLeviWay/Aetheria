@@ -37,14 +37,19 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="card">
-      <h2 className="text-xl font-semibold text-center mb-6">{t("auth.signup")}</h2>
+    <div>
+      {/* Heading */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
+        <p className="text-sm text-gray-500 mt-1">Start organizing your work in minutes.</p>
+      </div>
 
+      {/* Google button */}
       <button
         onClick={() => signIn("google", { callbackUrl: "/my-day" })}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-border rounded-xl hover:bg-gray-50 transition-colors text-sm font-medium mb-4"
+        className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border-2 border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/40 transition-all duration-150 text-sm font-semibold text-gray-700 shadow-sm mb-5"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
           <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -53,65 +58,79 @@ export default function SignupPage() {
         {t("auth.continueWith")} Google
       </button>
 
-      <div className="relative mb-4">
+      {/* Divider */}
+      <div className="relative mb-5">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
+          <div className="w-full border-t border-gray-200" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-surface px-3 text-xs text-text-secondary">{t("auth.orWith")}</span>
+          <span className="bg-white px-3 text-xs text-gray-400 font-medium">{t("auth.orWith")}</span>
         </div>
       </div>
 
+      {/* Error */}
       {error && (
-        <div className="mb-4 p-3 bg-danger/10 border border-danger/20 text-danger text-sm rounded-xl">
-          {error}
+        <div className="mb-5 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-start gap-2">
+          <span className="mt-px">⚠</span>
+          <span>{error}</span>
         </div>
       )}
 
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t("auth.name")}</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            {t("auth.name")}
+          </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-2.5 text-sm border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+            placeholder="Jane Smith"
+            className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 placeholder-gray-400 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 focus:bg-white transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t("auth.email")}</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            {t("auth.email")}
+          </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-2.5 text-sm border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+            placeholder="you@example.com"
+            className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 placeholder-gray-400 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 focus:bg-white transition-all"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t("auth.password")}</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            {t("auth.password")}
+          </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full px-4 py-2.5 text-sm border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+            placeholder="At least 8 characters"
+            className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 placeholder-gray-400 text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 focus:bg-white transition-all"
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full py-2.5 disabled:opacity-50"
+          className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm mt-1"
+          style={{ background: loading ? "#6366f1" : "linear-gradient(135deg, #4F46E5, #7C3AED)" }}
         >
           {loading ? t("common.loading") : t("auth.signup")}
         </button>
       </form>
 
-      <p className="text-center text-sm text-text-secondary mt-4">
+      <p className="text-center text-sm text-gray-500 mt-6">
         {t("auth.haveAccount")}{" "}
-        <Link href="/login" className="text-primary hover:underline font-medium">
+        <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-colors">
           {t("auth.login")}
         </Link>
       </p>

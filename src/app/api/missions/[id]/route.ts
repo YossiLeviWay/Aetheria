@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     include: {
       tasks: {
         include: {
-          assignee: { select: { id: true, name: true, avatarUrl: true } },
+          assignee: { select: { id: true, name: true, image: true } },
           checklist: { orderBy: { sortOrder: "asc" } },
           tags: true,
           _count: { select: { comments: true } },

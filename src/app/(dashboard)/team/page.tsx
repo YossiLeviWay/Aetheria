@@ -67,7 +67,7 @@ export default function TeamPage() {
             const isCurrentUser = member.userId === currentUserId;
             return (
               <div key={member.id} className="card flex items-center gap-4">
-                <Avatar name={member.user.name} avatarUrl={member.user.avatarUrl} size="md" />
+                <Avatar name={member.user.name} image={member.user.image} size="md" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-sm truncate">{member.user.name}</p>

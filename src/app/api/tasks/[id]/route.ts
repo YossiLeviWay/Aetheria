@@ -10,19 +10,19 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   const task = await db.task.findUnique({
     where: { id: params.id },
     include: {
-      assignee: { select: { id: true, name: true, avatarUrl: true } },
-      creator: { select: { id: true, name: true, avatarUrl: true } },
+      assignee: { select: { id: true, name: true, image: true } },
+      creator: { select: { id: true, name: true, image: true } },
       checklist: { orderBy: { sortOrder: "asc" } },
       tags: true,
       attachments: true,
       comments: {
         where: { parentId: null },
         include: {
-          author: { select: { id: true, name: true, avatarUrl: true } },
+          author: { select: { id: true, name: true, image: true } },
           reactions: true,
           replies: {
             include: {
-              author: { select: { id: true, name: true, avatarUrl: true } },
+              author: { select: { id: true, name: true, image: true } },
               reactions: true,
             },
           },
@@ -48,7 +48,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       dueDate: updates.dueDate ? new Date(updates.dueDate) : updates.dueDate === null ? null : undefined,
     },
     include: {
-      assignee: { select: { id: true, name: true, avatarUrl: true } },
+      assignee: { select: { id: true, name: true, image: true } },
       checklist: true,
       tags: true,
     },

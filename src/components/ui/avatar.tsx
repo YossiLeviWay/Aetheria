@@ -2,7 +2,7 @@ import { cn, getInitials } from "@/lib/utils";
 
 interface AvatarProps {
   name: string;
-  avatarUrl?: string | null;
+  image?: string | null;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
@@ -13,12 +13,12 @@ const sizeClasses = {
   lg: "w-10 h-10 text-base",
 };
 
-export default function Avatar({ name, avatarUrl, size = "md", className }: AvatarProps) {
-  if (avatarUrl) {
+export default function Avatar({ name, image, size = "md", className }: AvatarProps) {
+  if (image) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={avatarUrl}
+        src={image}
         alt={name}
         className={cn("rounded-full object-cover", sizeClasses[size], className)}
       />

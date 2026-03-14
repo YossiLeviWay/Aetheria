@@ -13,7 +13,7 @@ export async function GET() {
 
   const members = await db.workspaceMember.findMany({
     where: { workspaceId: member.workspaceId },
-    include: { user: { select: { id: true, name: true, email: true, avatarUrl: true } } },
+    include: { user: { select: { id: true, name: true, email: true, image: true } } },
     orderBy: { joinedAt: "asc" },
   });
 
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
   const newMember = await db.workspaceMember.create({
     data: { userId: invitedUser.id, workspaceId: member.workspaceId, role: role ?? "member" },
-    include: { user: { select: { id: true, name: true, email: true, avatarUrl: true } } },
+    include: { user: { select: { id: true, name: true, email: true, image: true } } },
   });
 
   return NextResponse.json(newMember);

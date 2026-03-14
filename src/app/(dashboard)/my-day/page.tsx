@@ -1,19 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, CheckSquare, Clock, Plus } from "lucide-react";
+import { Calendar, CheckSquare, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { formatDate } from "@/lib/utils";
 import Avatar from "@/components/ui/avatar";
 import Badge from "@/components/ui/badge";
 import { TaskSkeleton } from "@/components/ui/skeleton";
-import type { Task, CalendarEvent } from "@/types";
+import Modal from "@/components/ui/modal";
+import type { Task, CalendarEvent, Project, Mission, TaskPriority } from "@/types";
 
 export default function MyDayPage() {
   const { t, lang } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showNewTask, setShowNewTask] = useState(false);
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString(lang === "he" ? "he-IL" : "en-US", {
@@ -76,7 +78,10 @@ export default function MyDayPage() {
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-base">{t("dashboard.todayTasks")}</h2>
-            <button className="flex items-center gap-1.5 text-sm text-primary hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors">
+            <button
+              onClick={() => setShowNewTask(true)}
+              className="flex items-center gap-1.5 text-sm text-primary hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors"
+            >
               <Plus size={15} />
               {t("task.new")}
             </button>
@@ -155,6 +160,16 @@ export default function MyDayPage() {
           </div>
         </div>
       </div>
+
+      {showNewTask && (
+        <NewTaskModal
+          onClose={() => setShowNewTask(false)}
+          onCreated={(task) => {
+            setTasks((prev) => [task, ...prev]);
+            setShowNewTask(false);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -203,7 +218,7 @@ function TaskCard({ task, dimmed, onUpdate }: { task: Task; dimmed?: boolean; on
       </div>
 
       {task.assignee && (
-        <Avatar name={task.assignee.name} avatarUrl={task.assignee.avatarUrl} size="sm" />
+        <Avatar name={task.assignee.name} image={task.assignee.image} size="sm" />
       )}
     </div>
   );
@@ -211,18 +226,61 @@ function TaskCard({ task, dimmed, onUpdate }: { task: Task; dimmed?: boolean; on
 
 function MiniCalendar() {
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const [calYear, setCalYear] = useState(today.getFullYear());
+  const [calMonth, setCalMonth] = useState(today.getMonth());
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: firstDay }, (_, i) => i);
 
+  const displayDate = new Date(calYear, calMonth, 1);
+  const monthLabel = displayDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  function prevMonth() {
+    if (calMonth === 0) {
+      setCalMonth(11);
+      setCalYear((y) => y - 1);
+    } else {
+      setCalMonth((m) => m - 1);
+    }
+  }
+
+  function nextMonth() {
+    if (calMonth === 11) {
+      setCalMonth(0);
+      setCalYear((y) => y + 1);
+    } else {
+      setCalMonth((m) => m + 1);
+    }
+  }
+
+  const isToday = (day: number) =>
+    day === today.getDate() &&
+    calMonth === today.getMonth() &&
+    calYear === today.getFullYear();
+
   return (
     <div>
-      <p className="text-sm font-semibold mb-3">
-        {today.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-      </p>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-sm font-semibold">{monthLabel}</p>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={prevMonth}
+            className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-background transition-colors"
+            aria-label="Previous month"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            onClick={nextMonth}
+            className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-background transition-colors"
+            aria-label="Next month"
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
+      </div>
       <div className="grid grid-cols-7 gap-1 text-center">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
           <div key={i} className="text-xs text-text-secondary font-medium py-1">{d}</div>
@@ -232,7 +290,7 @@ function MiniCalendar() {
           <button
             key={day}
             className={`text-xs py-1.5 rounded-lg transition-colors ${
-              day === today.getDate()
+              isToday(day)
                 ? "bg-primary text-white font-semibold"
                 : "hover:bg-background text-text-secondary"
             }`}
@@ -242,5 +300,213 @@ function MiniCalendar() {
         ))}
       </div>
     </div>
+  );
+}
+
+interface NewTaskModalProps {
+  onClose: () => void;
+  onCreated: (task: Task) => void;
+}
+
+function NewTaskModal({ onClose, onCreated }: NewTaskModalProps) {
+  const [name, setName] = useState("");
+  const [projectId, setProjectId] = useState("");
+  const [missionId, setMissionId] = useState("");
+  const [priority, setPriority] = useState<TaskPriority>("medium");
+  const [dueDate, setDueDate] = useState("");
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [missions, setMissions] = useState<Mission[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [loadingMissions, setLoadingMissions] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadProjects() {
+      setLoadingProjects(true);
+      try {
+        const res = await fetch("/api/projects");
+        if (res.ok) setProjects(await res.json());
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoadingProjects(false);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  useEffect(() => {
+    if (!projectId) {
+      setMissions([]);
+      setMissionId("");
+      return;
+    }
+    async function loadMissions() {
+      setLoadingMissions(true);
+      setMissionId("");
+      try {
+        const res = await fetch(`/api/missions?projectId=${projectId}`);
+        if (res.ok) setMissions(await res.json());
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoadingMissions(false);
+      }
+    }
+    loadMissions();
+  }, [projectId]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) {
+      setError("Task name is required.");
+      return;
+    }
+    setError("");
+    setSubmitting(true);
+    try {
+      const body: Record<string, unknown> = { name: name.trim(), priority };
+      if (missionId) body.missionId = missionId;
+      if (dueDate) body.dueDate = dueDate;
+
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data?.error ?? "Failed to create task. Please try again.");
+        return;
+      }
+
+      const task: Task = await res.json();
+      onCreated(task);
+    } catch (e) {
+      console.error(e);
+      setError("An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputClass =
+    "w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40 transition";
+  const labelClass = "block text-xs font-medium text-text-secondary mb-1";
+
+  return (
+    <Modal open={true} onClose={onClose} title="New Task" size="md">
+      <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        {error && (
+          <p className="text-sm text-danger bg-danger/10 rounded-lg px-3 py-2">{error}</p>
+        )}
+
+        {/* Task Name */}
+        <div>
+          <label className={labelClass} htmlFor="task-name">
+            Task Name <span className="text-danger">*</span>
+          </label>
+          <input
+            id="task-name"
+            type="text"
+            className={inputClass}
+            placeholder="Enter task name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            autoFocus
+          />
+        </div>
+
+        {/* Project */}
+        <div>
+          <label className={labelClass} htmlFor="task-project">Project</label>
+          <select
+            id="task-project"
+            className={inputClass}
+            value={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
+            disabled={loadingProjects}
+          >
+            <option value="">{loadingProjects ? "Loading projects..." : "Select a project (optional)"}</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Mission */}
+        <div>
+          <label className={labelClass} htmlFor="task-mission">Mission</label>
+          <select
+            id="task-mission"
+            className={inputClass}
+            value={missionId}
+            onChange={(e) => setMissionId(e.target.value)}
+            disabled={!projectId || loadingMissions}
+          >
+            <option value="">
+              {!projectId
+                ? "Select a project first"
+                : loadingMissions
+                ? "Loading missions..."
+                : "Select a mission (optional)"}
+            </option>
+            {missions.map((m) => (
+              <option key={m.id} value={m.id}>{m.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Priority */}
+        <div>
+          <label className={labelClass} htmlFor="task-priority">Priority</label>
+          <select
+            id="task-priority"
+            className={inputClass}
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as TaskPriority)}
+          >
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        {/* Due Date */}
+        <div>
+          <label className={labelClass} htmlFor="task-due-date">Due Date</label>
+          <input
+            id="task-due-date"
+            type="date"
+            className={inputClass}
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-sm rounded-lg border border-border hover:bg-background transition-colors"
+            disabled={submitting}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors disabled:opacity-60"
+            disabled={submitting || !name.trim()}
+          >
+            {submitting ? "Creating..." : "Create Task"}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }

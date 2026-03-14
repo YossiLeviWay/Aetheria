@@ -240,7 +240,7 @@ function TaskCard({
             </div>
 
             {task.assignee && (
-              <Avatar name={task.assignee.name} avatarUrl={task.assignee.avatarUrl} size="sm" />
+              <Avatar name={task.assignee.name} image={task.assignee.image} size="sm" />
             )}
           </div>
 

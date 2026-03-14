@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Plus, FolderOpen, MoreHorizontal, Layers } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { useAppStore } from "@/stores/app-store";
@@ -20,6 +21,11 @@ export default function ProjectsPage() {
   const { projects, setProjects, addProject } = useAppStore();
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") setShowNew(true);
+  }, [searchParams]);
 
   useEffect(() => {
     fetch("/api/projects")

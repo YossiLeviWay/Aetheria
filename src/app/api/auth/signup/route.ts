@@ -4,10 +4,15 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    const body = await req.json();
+    const { name, email, password } = body;
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
     }
 
     const existing = await db.user.findUnique({ where: { email } });
@@ -16,21 +21,26 @@ export async function POST(req: NextRequest) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const user = await db.user.create({
-      data: { name, email, passwordHash },
-    });
 
-    // Create default workspace
-    const workspace = await db.workspace.create({
-      data: { name: `${name}'s Workspace` },
-    });
-    await db.workspaceMember.create({
-      data: { userId: user.id, workspaceId: workspace.id, role: "admin" },
+    // Create user and default workspace in a transaction
+    await db.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: { name, email, passwordHash },
+      });
+
+      const workspace = await tx.workspace.create({
+        data: { name: `${name}'s Workspace` },
+      });
+
+      await tx.workspaceMember.create({
+        data: { userId: user.id, workspaceId: workspace.id, role: "admin" },
+      });
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Signup error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: "Internal server error", details: message }, { status: 500 });
   }
 }
